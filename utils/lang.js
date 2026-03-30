@@ -1,0 +1,42 @@
+module.exports = {
+    en: {
+        suggestion_footer: "Suggestion System",
+        suggestion_accepted: "✅ Accepted",
+        suggestion_rejected: "❌ Rejected",
+        suggestion_accepted_by: "Accepted by",
+        suggestion_rejected_by: "Rejected by",
+        suggestion_dm_accepted: "✅ Your suggestion has been accepted!",
+        suggestion_dm_rejected: "❌ Your suggestion was rejected.",
+        suggestion_reason: "Reason",
+        feedback_footer: "Feedback System",
+        feedback_rating_title: "Rating",
+        feedback_prompt: "please select a rating for your feedback:",
+        feedback_from: "Feedback from",
+        ai_error_no_key: "⚠️ **AI Error**: No API Key configured. Please check your dashboard.",
+        ai_error_server: "❌ **AI Error**: Server returned status",
+        ai_error_invalid: "⚠️ **AI Error**: The AI didn't return a valid response.",
+        ai_error_connect: "❌ **Connection Error**: I couldn't reach the AI server. Please try again later.",
+        btn_accept: "Accept",
+        btn_reject: "Reject"
+    },
+    ar: {
+        suggestion_footer: "نظام الاقتراحات",
+        suggestion_accepted: "✅ تم القبول",
+        suggestion_rejected: "❌ تم الرفض",
+        suggestion_accepted_by: "تم القبول بواسطة",
+        suggestion_rejected_by: "تم الرفض بواسطة",
+        suggestion_dm_accepted: "✅ تم قبول اقتراحك!",
+        suggestion_dm_rejected: "❌ تم رفض اقتراحك.",
+        suggestion_reason: "السبب",
+        feedback_footer: "نظام الآراء",
+        feedback_rating_title: "التقييم",
+        feedback_prompt: "يرجى تحديد تقييم لملاحظاتك:",
+        feedback_from: "رأي من",
+        ai_error_no_key: "⚠️ **خطأ AI**: لم يتم تكوين مفتاح API. يرجى مراجعة لوحة التحكم.",
+        ai_error_server: "❌ **خطأ AI**: الخادم ارجع حالة",
+        ai_error_invalid: "⚠️ **خطأ AI**: لم يرجع الذكاء الاصطناعي استجابة صالحة.",
+        ai_error_connect: "❌ **خطأ في الاتصال**: لم أتمكن من الوصول إلى خادم AI. حاول مرة أخرى لاحقًا.",
+        btn_accept: "قبول",
+        btn_reject: "رفض"
+    }
+};

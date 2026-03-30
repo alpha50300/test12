@@ -1,0 +1,161 @@
+<link rel="stylesheet" href="/css/autoreply.css">
+<div style="max-width: 1000px; margin: 0 auto;">
+    <!-- Add New Reply -->
+    <div class="glass" style="padding: 30px; margin-bottom: 30px;">
+        <h2 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-robot"></i> New Auto-Reply
+        </h2>
+
+        <form action="/api/settings/autoreply/add" method="POST">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <!-- Trigger & Match -->
+                <div class="form-group">
+                    <label>Trigger Word/Phrase</label>
+                    <input type="text" name="trigger" class="form-input" placeholder="e.g. !help, hello" required>
+                    <small style="color: var(--text-muted); display: block; margin-top: 5px;">
+                        The text that triggers this reply.
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label>Match Mode</label>
+                    <select name="matchMode" class="custom-select">
+                        <option value="exact">Exact Match (Whole Message)</option>
+                        <option value="contains" selected>Fuzzy Match (Contains Phrase)</option>
+                        <option value="startswith">Starts With</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Response Message</label>
+                <textarea name="response" class="form-input" rows="3" style="resize: vertical;"
+                    placeholder="Hello [user], welcome back!" required></textarea>
+
+                <!-- Placeholders Hint -->
+                <div
+                    style="margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; font-size: 0.85rem; color: var(--text-secondary);">
+                    <strong>Available Placeholders:</strong>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 5px;">
+                        <code>[user]</code> - Mention user (@Name)
+                        <code>[userName]</code> - Username (No Tag)
+                        <code>[server]</code> - Server Name
+                        <code>[invites]</code> - User Invite Count
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Reply Type</label>
+                <div style="display: flex; gap: 15px;">
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <input type="radio" name="replyMode" value="normal" checked>
+                        Normal Message
+                    </label>
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <input type="radio" name="replyMode" value="reply">
+                        Reply to Message
+                    </label>
+                </div>
+            </div>
+
+            <hr style="border-color: var(--glass-border); margin: 20px 0;">
+
+            <h4 style="margin-bottom: 15px; color: var(--accent);">Advanced Filters (Optional)</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label>Allowed Channels (Whitelist)</label>
+                    <select name="allowedChannels" class="custom-select multi-select-chip" multiple>
+                        <% channels.forEach(c=> { %>
+                            <option value="<%= c.id %>">#<%= c.name %>
+                            </option>
+                            <% }) %>
+                    </select>
+                    <small style="color: var(--text-muted);">Only work in these channels.</small>
+                </div>
+                <!--
+                <div class="form-group">
+                    <label>Ignored Channels (Blacklist)</label>
+                    <select name="deniedChannels" class="custom-select" multiple style="height: 100px;">
+                        <% channels.forEach(c => { %>
+                            <option value="<%= c.id %>">#<%= c.name %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                -->
+                <div class="form-group">
+                    <label>Allowed Roles (Whitelist)</label>
+                    <select name="allowedRoles" class="custom-select multi-select-chip" multiple>
+                        <% roles.forEach(r=> { %>
+                            <option value="<%= r.id %>"
+                                style="--role-color: <%= r.color === '#000000' ? 'var(--text-main)' : r.color %>; color: var(--role-color);">
+                                <%= r.name %>
+                            </option>
+                            <% }) %>
+                    </select>
+                    <small style="color: var(--text-muted);">Only for users with these roles.</small>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <small style="color: var(--text-muted);">* Leave empty to allow all.</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Auto-Reply
+            </button>
+        </form>
+    </div>
+
+    <!-- Active Replies -->
+    <div class="glass" style="padding: 30px;">
+        <h3
+            style="margin-bottom: 20px; font-size: 1.2rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">
+            Active Auto-Replies
+        </h3>
+
+        <% if (autoReplies.length> 0) { %>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                <% autoReplies.forEach((reply, index)=> { %>
+                    <div class="glass"
+                        style="padding: 20px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); position: relative;">
+                        <div style="margin-bottom: 10px;">
+                            <span class="badge"
+                                style="background: rgba(99, 102, 241, 0.2); color: var(--primary); padding: 4px 8px; border-radius: 6px; font-size: 0.85rem; font-weight: 600;">
+                                Trigger
+                            </span>
+                            <div style="font-weight: 700; font-size: 1.1rem; margin-top: 5px; color: var(--text-main);">
+                                <%= reply.trigger %>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 15px;">
+                            <span class="badge"
+                                style="background: rgba(255, 255, 255, 0.05); color: var(--text-muted); padding: 4px 8px; border-radius: 6px; font-size: 0.85rem;">
+                                Response
+                            </span>
+                            <div
+                                style="margin-top: 5px; color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; white-space: pre-wrap;">
+                                <%= reply.response %>
+                            </div>
+                        </div>
+
+                        <form action="/api/settings/autoreply/delete" method="POST"
+                            style="position: absolute; top: 15px; right: 15px; margin: 0;">
+                            <input type="hidden" name="id" value="<%= reply.id %>">
+                            <button type="submit" class="btn btn-delete" style="padding: 6px 10px; font-size: 0.8rem;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <% }) %>
+            </div>
+            <% } else { %>
+                <div
+                    style="text-align: center; padding: 40px; color: var(--text-secondary); background: rgba(0,0,0,0.1); border-radius: 12px; border: 1px dashed var(--glass-border);">
+                    <i class="fas fa-inbox fa-3x" style="margin-bottom: 15px; opacity: 0.5;"></i>
+                    <p>No auto-replies configured yet.</p>
+                </div>
+                <% } %>
+    </div>
+</div>

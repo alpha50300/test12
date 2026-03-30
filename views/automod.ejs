@@ -1,0 +1,289 @@
+<link rel="stylesheet" href="/css/automod.css">
+<div class="page-header">
+    <div>
+        <h2><i class="fas fa-shield-alt"></i> Auto Moderation</h2>
+        <p style="color: var(--text-secondary);">Protect your server from spam, bad words, and malicious content.</p>
+    </div>
+    <div class="header-actions">
+        <button type="submit" form="automodForm" class="btn btn-primary">
+            <i class="fas fa-save"></i> Save Changes
+        </button>
+    </div>
+</div>
+
+<% if (success) { %>
+    <div class="alert alert-success"
+        style="background: rgba(16, 185, 129, 0.2); border: 1px solid var(--success); color: #fff; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+        <i class="fas fa-check-circle"></i> Settings saved successfully!
+    </div>
+    <% } %>
+
+        <form id="automodForm" action="/automod/save" method="POST">
+            <div class="stats-grid">
+
+                <!-- Bad Words -->
+                <div class="stat-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <div
+                                style="width: 50px; height: 50px; background: rgba(239, 68, 68, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--danger);">
+                                <i class="fas fa-comment-slash fa-lg"></i>
+                            </div>
+                            <div>
+                                <h3 style="margin: 0;">Bad Words</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Filter profanity and
+                                    toxic language</p>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" name="badwords_enabled" <%=automod.badwords.enabled ? 'checked' : ''
+                                %>>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border);">
+                        <div class="form-group">
+                            <label>Banned Words (comma separated)</label>
+                            <textarea name="badwords_list" class="form-input" rows="3"
+                                placeholder="word1, word2, word3..."><%= automod.badwords.words.join(', ') %></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Action</label>
+                            <select name="badwords_action" class="custom-select">
+                                <option value="delete" <%=automod.badwords.action==='delete' ? 'selected' : '' %>>Delete
+                                    Message</option>
+                                <option value="warn" <%=automod.badwords.action==='warn' ? 'selected' : '' %>>Delete &
+                                    Warn</option>
+                                <option value="timeout" <%=automod.badwords.action==='timeout' ? 'selected' : '' %>
+                                    >Timeout User (1h)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Links -->
+                <div class="stat-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <div
+                                style="width: 50px; height: 50px; background: rgba(59, 130, 246, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #3b82f6;">
+                                <i class="fas fa-link fa-lg"></i>
+                            </div>
+                            <div>
+                                <h3 style="margin: 0;">Link Filter</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Block unauthorized
+                                    URLs</p>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" name="links_enabled" <%=automod.links.enabled ? 'checked' : '' %>>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border);">
+                        <div class="form-group">
+                            <label>Allowed Domains (Whitelist)</label>
+                            <textarea name="links_whitelist" class="form-input" rows="3"
+                                placeholder="google.com, youtube.com..."><%= automod.links.whitelist.join(', ') %></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Action</label>
+                            <select name="links_action" class="custom-select">
+                                <option value="delete" <%=automod.links.action==='delete' ? 'selected' : '' %>>Delete
+                                    Message</option>
+                                <option value="warn" <%=automod.links.action==='warn' ? 'selected' : '' %>>Delete & Warn
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spam -->
+                <div class="stat-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <div
+                                style="width: 50px; height: 50px; background: rgba(245, 158, 11, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--warning);">
+                                <i class="fas fa-comments fa-lg"></i>
+                            </div>
+                            <div>
+                                <h3 style="margin: 0;">Spam Protection</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Prevent message
+                                    flooding</p>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" name="spam_enabled" <%=automod.spam.enabled ? 'checked' : '' %>>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border);">
+                        <div class="form-group">
+                            <label>Max Messages (per 5s)</label>
+                            <input type="number" name="spam_threshold" class="form-input"
+                                value="<%= automod.spam.threshold %>" min="1" max="20">
+                        </div>
+                        <div class="form-group">
+                            <label>Action</label>
+                            <select name="spam_action" class="custom-select">
+                                <option value="delete" <%=automod.spam.action==='delete' ? 'selected' : '' %>>Delete
+                                    Messages</option>
+                                <option value="timeout" <%=automod.spam.action==='timeout' ? 'selected' : '' %>>Timeout
+                                    User (5m)</option>
+                                <option value="kick" <%=automod.spam.action==='kick' ? 'selected' : '' %>>Kick User
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mentions -->
+                <div class="stat-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <div
+                                style="width: 50px; height: 50px; background: rgba(139, 92, 246, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #8b5cf6;">
+                                <i class="fas fa-at fa-lg"></i>
+                            </div>
+                            <div>
+                                <h3 style="margin: 0;">Mass Mentions</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Stop mention
+                                    spamming</p>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" name="mentions_enabled" <%=automod.mentions.enabled ? 'checked' : ''
+                                %>>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border);">
+                        <div class="form-group">
+                            <label>Max Mentions</label>
+                            <input type="number" name="mentions_threshold" class="form-input"
+                                value="<%= automod.mentions.threshold %>" min="1" max="20">
+                        </div>
+                        <div class="form-group">
+                            <label>Action</label>
+                            <select name="mentions_action" class="custom-select">
+                                <option value="delete" <%=automod.mentions.action==='delete' ? 'selected' : '' %>>Delete
+                                    Message</option>
+                                <option value="timeout" <%=automod.mentions.action==='timeout' ? 'selected' : '' %>
+                                    >Timeout User (10m)</option>
+                                <option value="ban" <%=automod.mentions.action==='ban' ? 'selected' : '' %>>Ban User
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CAPS -->
+                <div class="stat-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <div
+                                style="width: 50px; height: 50px; background: rgba(255, 255, 255, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff;">
+                                <i class="fas fa-font fa-lg"></i>
+                            </div>
+                            <div>
+                                <h3 style="margin: 0;">Mass CAPS</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Limit excessive
+                                    capital letters</p>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" name="caps_enabled" <%=automod.caps.enabled ? 'checked' : '' %>>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border);">
+                        <div class="form-group">
+                            <label>Max Percentage (%)</label>
+                            <input type="number" name="caps_percentage" class="form-input"
+                                value="<%= automod.caps.percentage %>" min="1" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Action</label>
+                            <select name="caps_action" class="custom-select">
+                                <option value="delete" <%=automod.caps.action==='delete' ? 'selected' : '' %>>Delete
+                                    Message</option>
+                                <option value="warn" <%=automod.caps.action==='warn' ? 'selected' : '' %>>Warn User
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Invites -->
+                <div class="stat-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <div
+                                style="width: 50px; height: 50px; background: rgba(88, 101, 242, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #5865F2;">
+                                <i class="fab fa-discord fa-lg"></i>
+                            </div>
+                            <div>
+                                <h3 style="margin: 0;">Anti-Invite</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Block Discord server
+                                    invites</p>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" name="invites_enabled" <%=automod.invites.enabled ? 'checked' : ''
+                                %>>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border);">
+                        <div class="form-group">
+                            <label>Action</label>
+                            <select name="invites_action" class="custom-select">
+                                <option value="delete" <%=automod.invites.action==='delete' ? 'selected' : '' %>>Delete
+                                    Message</option>
+                                <option value="timeout" <%=automod.invites.action==='timeout' ? 'selected' : '' %>
+                                    >Timeout User (24h)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Exemptions -->
+            <div class="stat-card">
+                <h3><i class="fas fa-shield-alt"></i> Exemptions</h3>
+                <div class="glass" style="padding: 25px; margin-bottom: 30px;">
+                    <h3 style="margin-bottom: 20px;"><i class="fas fa-eye-slash"></i> Global Exemptions</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label>Ignored Channels</label>
+                            <select name="ignoredChannels" class="custom-select multi-select-chip" multiple>
+                                <% channels.forEach(channel=> { %>
+                                    <option value="<%= channel.id %>" <%=settings.ignoredChannels &&
+                                        settings.ignoredChannels.includes(channel.id) ? 'selected' : '' %>># <%=
+                                            channel.name %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Ignored Roles</label>
+                            <select name="ignoredRoles" class="custom-select multi-select-chip" multiple>
+                                <% roles.forEach(role=> { %>
+                                    <option value="<%= role.id %>" <%=settings.ignoredRoles &&
+                                        settings.ignoredRoles.includes(role.id) ? 'selected' : '' %> style="color: <%=
+                                            role.color %>">
+                                            <%= role.name %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+        </form>

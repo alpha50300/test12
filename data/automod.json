@@ -1,0 +1,35 @@
+{
+  "badwords": {
+    "enabled": true,
+    "words": [
+      "احا"
+    ],
+    "action": "warn"
+  },
+  "links": {
+    "enabled": true,
+    "whitelist": [],
+    "action": "delete"
+  },
+  "invites": {
+    "enabled": true,
+    "action": "timeout"
+  },
+  "spam": {
+    "enabled": true,
+    "threshold": 5,
+    "action": "timeout"
+  },
+  "mentions": {
+    "enabled": true,
+    "threshold": 5,
+    "action": "delete"
+  },
+  "caps": {
+    "enabled": true,
+    "percentage": 70,
+    "action": "delete"
+  },
+  "ignoredRoles": [],
+  "ignoredChannels": []
+}

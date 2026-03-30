@@ -1,0 +1,83 @@
+{
+  "panels": [
+    {
+      "id": "1772113044361",
+      "embed": {
+        "title": "Support Ticket",
+        "description": "Click the button below to open a ticket.",
+        "color": "#5865f2"
+      },
+      "component": {
+        "type": "select",
+        "label": "Open Ticket",
+        "emoji": "🎫",
+        "style": "Primary",
+        "supportRole": "1303856208746123316",
+        "options": [
+          {
+            "label": "General Support",
+            "description": "Get help with general issues",
+            "emoji": "🎫",
+            "value": "general",
+            "supportRole": "1305297926691618860"
+          },
+          {
+            "label": "New Option",
+            "description": "",
+            "emoji": "🔹",
+            "value": "opt_1772113037110",
+            "supportRole": "1350811529695596574"
+          }
+        ]
+      },
+      "config": {
+        "category": "1387546087035764848",
+        "requiredRole": "1316034599289098373"
+      }
+    },
+    {
+      "id": "1772113221326",
+      "embed": {
+        "title": "Support Ticket",
+        "description": "Click the button below to open a ticket.",
+        "color": "#5865f2"
+      },
+      "component": {
+        "type": "button",
+        "label": "Open Ticket",
+        "emoji": "🎫",
+        "style": "Primary",
+        "supportRole": null,
+        "options": [
+          {
+            "label": "General Support",
+            "description": "Get help with general issues",
+            "emoji": "🎫",
+            "value": "general"
+          }
+        ]
+      },
+      "config": {
+        "category": "",
+        "requiredRole": null
+      }
+    }
+  ],
+  "activeTickets": [
+    {
+      "id": "1470089147485126790",
+      "ownerId": "1289581696995561495",
+      "panelId": "1770566891025",
+      "createdAt": 1770567018909,
+      "claimedBy": "1289581696995561495",
+      "members": [
+        "1289581696995561495"
+      ]
+    }
+  ],
+  "settings": {
+    "transcriptChannel": null,
+    "category": null,
+    "supportRole": null
+  }
+}

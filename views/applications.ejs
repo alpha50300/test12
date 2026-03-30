@@ -1,0 +1,301 @@
+<link rel="stylesheet" href="/css/rules.css">
+
+<div class="page-header"
+    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+    <div>
+        <h2 style="font-size: 2rem; margin-bottom: 10px;"><i class="fas fa-file-signature"></i>
+            <%= __('apply_title') || 'Applications' %>
+        </h2>
+        <p style="color: var(--text-muted);">Create and manage multiple application forms.</p>
+    </div>
+    <button onclick="openAppModal()" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Create New Application
+    </button>
+</div>
+
+<!-- Applications List -->
+<div class="glass" style="padding: 25px;">
+    <% if (applications.length===0) { %>
+        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+            <i class="fas fa-folder-open" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.5;"></i>
+            <p>No applications created yet.</p>
+        </div>
+        <% } else { %>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                <% applications.forEach(app=> { %>
+                    <div class="glass" style="background: rgba(0,0,0,0.2); padding: 20px; position: relative;">
+                        <h3 style="margin-bottom: 10px;">
+                            <%= app.name %>
+                        </h3>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
+                            <i class="fas fa-hashtag"></i>
+                            <%= channels.find(c=> c.id === app.triggerChannel)?.name || 'Unknown Channel' %>
+                        </p>
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="editApp('<%= app.id %>')" class="btn btn-secondary" style="flex: 1;"><i
+                                    class="fas fa-edit"></i> Edit</button>
+                            <button onclick="sendAppEmbed('<%= app.id %>')" class="btn btn-accent" style="flex: 1;"><i
+                                    class="fas fa-paper-plane"></i> Send</button>
+                            <button onclick="deleteApp('<%= app.id %>')" class="btn btn-delete" style="width: 40px;"><i
+                                    class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <% }) %>
+            </div>
+            <% } %>
+</div>
+
+<!-- Create/Edit Modal (Hidden by default) -->
+<div id="appModal" class="modal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; overflow-y: auto;">
+    <div class="glass" style="max-width: 800px; margin: 50px auto; padding: 30px; position: relative;">
+        <!-- Close Button -->
+        <button onclick="closeAppModal()"
+            style="position: absolute; top: 20px; right: 20px; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">&times;</button>
+
+        <h2 id="modalTitle" style="margin-bottom: 20px;">Create Application</h2>
+        <input type="hidden" id="editAppId">
+
+        <div class="form-group">
+            <label>Application Name</label>
+            <input type="text" id="appName" class="form-input" placeholder="e.g., Staff Application">
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 form-group">
+                <label>Apply Channel (Start Button)</label>
+                <select id="appTriggerChannel" class="custom-select">
+                    <% channels.forEach(c=> { %>
+                        <option value="<%= c.id %>">#<%= c.name %>
+                        </option>
+                        <% }) %>
+                </select>
+            </div>
+            <div class="col-md-4 form-group">
+                <label>Review Channel (Admins only)</label>
+                <select id="appLogChannel" class="custom-select">
+                    <% channels.forEach(c=> { %>
+                        <option value="<%= c.id %>">#<%= c.name %>
+                        </option>
+                        <% }) %>
+                </select>
+            </div>
+            <div class="col-md-4 form-group">
+                <label>Decision Channel (Public Results)</label>
+                <select id="appDecisionChannel" class="custom-select">
+                    <option value="">-- None --</option>
+                    <% channels.forEach(c=> { %>
+                        <option value="<%= c.id %>">#<%= c.name %>
+                        </option>
+                        <% }) %>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 form-group">
+                <label>Role to Give (On Accept)</label>
+                <select id="appRewardRole" class="custom-select">
+                    <option value="">-- None --</option>
+                    <% roles.forEach(r=> { %>
+                        <option value="<%= r.id %>">@<%= r.name %>
+                        </option>
+                        <% }) %>
+                </select>
+            </div>
+            <div class="col-md-6 form-group">
+                <label>Required Role (To Apply)</label>
+                <select id="appRequiredRole" class="custom-select">
+                    <option value="">-- None --</option>
+                    <% roles.forEach(r=> { %>
+                        <option value="<%= r.id %>">@<%= r.name %>
+                        </option>
+                        <% }) %>
+                </select>
+            </div>
+        </div>
+
+        <hr style="border-color: var(--border); margin: 20px 0;">
+
+        <h3>Questions</h3>
+        <div id="questionsList"></div>
+        <button onclick="addQuestion()" class="btn btn-secondary" style="width: 100%; margin-top: 10px;">+ Add
+            Question</button>
+
+        <div style="margin-top: 30px; text-align: right;">
+            <button onclick="saveApp()" class="btn btn-primary"><i class="fas fa-save"></i> Save Application</button>
+        </div>
+    </div>
+</div>
+
+<!-- DATA CONTAINER -->
+<script id="applications-data" type="application/json">
+    <%- JSON.stringify(applications) %>
+</script>
+
+<script>
+    let currentQuestions = [];
+    let allApps = [];
+    try {
+        allApps = JSON.parse(document.getElementById('applications-data').textContent);
+    } catch (e) {
+        console.error('Failed to parse applications data', e);
+        allApps = [];
+    }
+
+    function openAppModal(isEdit = false) {
+        document.getElementById('appModal').style.display = 'block';
+        if (!isEdit) {
+            document.getElementById('modalTitle').innerText = 'Create Application';
+            document.getElementById('editAppId').value = '';
+            document.getElementById('appName').value = '';
+            document.getElementById('appTriggerChannel').value = '<%= channels[0]?.id || "" %>';
+            document.getElementById('appLogChannel').value = '<%= channels[0]?.id || "" %>';
+            document.getElementById('appDecisionChannel').value = '';
+            document.getElementById('appRewardRole').value = '';
+            document.getElementById('appRequiredRole').value = '';
+            currentQuestions = [{ question: '', type: 'Short', placeholder: '' }];
+            renderQuestions();
+        }
+    }
+
+    function closeAppModal() {
+        document.getElementById('appModal').style.display = 'none';
+    }
+
+    function editApp(id) {
+        const app = allApps.find(a => a.id === id);
+        if (!app) return;
+
+        document.getElementById('modalTitle').innerText = 'Edit Application';
+        document.getElementById('editAppId').value = app.id;
+        document.getElementById('appName').value = app.name;
+        document.getElementById('appTriggerChannel').value = app.triggerChannel;
+        document.getElementById('appLogChannel').value = app.logChannel || '';
+        document.getElementById('appDecisionChannel').value = app.decisionChannel || '';
+        document.getElementById('appRewardRole').value = app.rewardRole || '';
+        document.getElementById('appRequiredRole').value = app.requiredRole || '';
+        currentQuestions = app.questions || [];
+        renderQuestions();
+
+        document.getElementById('appModal').style.display = 'block';
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('questionsList');
+        container.innerHTML = '';
+
+        currentQuestions.forEach((q, index) => {
+            const div = document.createElement('div');
+            div.className = 'glass';
+            div.style.padding = '15px';
+            div.style.marginBottom = '10px';
+            div.style.position = 'relative';
+            div.style.background = 'rgba(255,255,255,0.05)';
+
+            div.innerHTML = `
+                <button onclick="removeQuestion(${index})" style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: #ff4444; cursor: pointer;">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label>Question ${index + 1}</label>
+                    <input type="text" class="form-input" value="${q.question}" onchange="updateQuestion(${index}, 'question', this.value)" placeholder="Enter question here...">
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <select class="custom-select" onchange="updateQuestion(${index}, 'type', this.value)">
+                            <option value="Short" ${q.type === 'Short' ? 'selected' : ''}>Short Answer</option>
+                            <option value="Paragraph" ${q.type === 'Paragraph' ? 'selected' : ''}>Paragraph</option>
+                            <option value="Multiple Choice" ${q.type === 'Multiple Choice' ? 'selected' : ''}>Multiple Choice</option>
+                        </select>
+                    </div>
+                    ${q.type === 'Multiple Choice' ? `
+                    <div class="col-6">
+                         <input type="text" class="form-input" value="${q.options ? q.options.join(',') : ''}" 
+                            onchange="updateQuestion(${index}, 'options', this.value.split(','))" 
+                            placeholder="Option1,Option2,Option3">
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function addQuestion() {
+        currentQuestions.push({
+            question: '',
+            type: 'Short',
+            options: []
+        });
+        renderQuestions();
+    }
+
+    function removeQuestion(index) {
+        currentQuestions.splice(index, 1);
+        renderQuestions();
+    }
+
+    function updateQuestion(index, key, value) {
+        currentQuestions[index][key] = value;
+        // Re-render if type changes to show/hide options
+        if (key === 'type') renderQuestions();
+    }
+
+    async function saveApp() {
+        const id = document.getElementById('editAppId').value;
+        const data = {
+            id: id,
+            name: document.getElementById('appName').value,
+            triggerChannel: document.getElementById('appTriggerChannel').value,
+            logChannel: document.getElementById('appLogChannel').value,
+            decisionChannel: document.getElementById('appDecisionChannel').value,
+            rewardRole: document.getElementById('appRewardRole').value,
+            requiredRole: document.getElementById('appRequiredRole').value,
+            questions: currentQuestions
+        };
+
+        if (!data.name || !data.triggerChannel) return alert('Name and Apply Channel are required.');
+
+        try {
+            const res = await fetch('/api/applications/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const json = await res.json();
+            if (json.success) location.reload();
+            else alert('Error: ' + json.message);
+        } catch (e) {
+            console.error(e);
+            alert('Failed to save.');
+        }
+    }
+
+    async function deleteApp(id) {
+        if (!confirm('Delete this application?')) return;
+        try {
+            const res = await fetch('/api/applications/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            });
+            const json = await res.json();
+            if (json.success) location.reload();
+        } catch (e) { console.error(e); }
+    }
+
+    async function sendAppEmbed(id) {
+        if (!confirm('Send embed to channel?')) return;
+        try {
+            const res = await fetch('/api/applications/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            });
+            const json = await res.json();
+            if (json.success) alert('Sent!');
+            else alert('Error: ' + json.message);
+        } catch (e) { console.error(e); }
+    }
+</script>

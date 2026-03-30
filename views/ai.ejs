@@ -1,0 +1,88 @@
+<link rel="stylesheet" href="/css/ai.css">
+<div class="page-header">
+    <h2><i class="fas fa-brain"></i> AI Chat Settings</h2>
+    <p style="color: var(--text-secondary);">Configure the Mistral AI integration for your server.</p>
+</div>
+
+<div class="glass" style="padding: 30px; margin-bottom: 25px;">
+    <form action="/api/settings/ai" method="POST">
+
+        <!-- Enable Toggle -->
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid var(--glass-border);">
+            <div>
+                <label style="margin: 0; font-size: 1.1rem; font-weight: 600; cursor: pointer;" for="aiToggle">Enable AI
+                    Chat</label>
+                <p style="margin: 5px 0 0; font-size: 0.9rem; color: var(--text-muted);">Toggle the AI chat feature on
+                    or off.</p>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="aiToggle" name="enabled" <%=ai.enabled ? 'checked' : '' %>>
+                <span class="slider round"></span>
+            </label>
+        </div>
+
+        <!-- Channel Select -->
+        <div class="form-group">
+            <label>AI Chat Channel</label>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">The bot will use this channel
+                for AI conversations.</p>
+            <div style="position: relative;">
+                <i class="fas fa-hashtag"
+                    style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                <select name="channelId" class="custom-select" style="padding-left: 45px;" required>
+                    <option value="" disabled <%=!ai.channelId ? 'selected' : '' %>>Select a channel</option>
+                    <% if (channels && channels.length> 0) { %>
+                        <% channels.forEach(channel=> { %>
+                            <option value="<%= channel.id %>" <%=ai.channelId===channel.id ? 'selected' : '' %>>
+                                <%= channel.name %>
+                            </option>
+                            <% }) %>
+                                <% } else { %>
+                                    <option value="">No text channels found</option>
+                                    <% } %>
+                </select>
+            </div>
+        </div>
+
+        <!-- API Key -->
+        <div class="form-group">
+            <label>Mistral API Key</label>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">
+                Leave blank to use the default key. <a href="https://console.mistral.ai/" target="_blank"
+                    style="color: var(--primary);">Get a key here</a>.
+            </p>
+            <div style="position: relative;">
+                <i class="fas fa-key"
+                    style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                <input type="password" name="apiKey" class="form-input" style="padding-left: 45px;"
+                    placeholder="Enter your API Key..."
+                    value="<%= ai.apiKey === '1ctxqnSI7lNHEolq7i2CO4LZCSq5AP3E' ? '' : ai.apiKey %>">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 20px; width: 100%; justify-content: center;">
+            <i class="fas fa-save"></i> Save Settings
+        </button>
+    </form>
+</div>
+
+<!-- Info Box -->
+<div class="glass" style="padding: 25px; border-left: 4px solid var(--accent); background: rgba(20, 20, 25, 0.6);">
+    <h4 style="margin: 0 0 10px; color: var(--accent); display: flex; align-items: center; gap: 10px;">
+        <i class="fas fa-info-circle"></i> About AI Chat
+    </h4>
+    <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">
+        This feature uses the Mistral AI model to chat with users.
+        When enabled, the bot will treat every message in the selected channel as a prompt and reply to it in real-time.
+    </p>
+    <div
+        style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.9rem;">
+        <strong><i class="fas fa-check-circle" style="color: var(--success);"></i> Requirement:</strong>
+        Ensure the bot has <span
+            style="color: white; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">Read
+            Messages</span> and <span
+            style="color: white; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">Send
+            Messages</span> permissions in the selected channel.
+    </div>
+</div>

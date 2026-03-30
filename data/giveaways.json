@@ -1,0 +1,117 @@
+{
+  "active": [
+    {
+      "messageId": "1474928214639120404",
+      "channelId": "1474927982467354817",
+      "guildId": "1470554500996530208",
+      "prize": "تست",
+      "startTime": 1771720689592,
+      "endTime": 1771720749035,
+      "winnerCount": 1,
+      "requiredRole": null,
+      "hostId": "1423951445933428757",
+      "ended": false
+    }
+  ],
+  "ended": [
+    {
+      "messageId": "1471857269523349515",
+      "channelId": "1466534819826761992",
+      "guildId": "1446654180784738406",
+      "prize": "test",
+      "startTime": 1770988579258,
+      "endTime": 1770988636113,
+      "winnerCount": 1,
+      "requiredRole": null,
+      "hostId": "1469331925062914149",
+      "ended": true,
+      "winners": [
+        "1289581696995561495"
+      ]
+    },
+    {
+      "messageId": "1471888753977987125",
+      "channelId": "1466534819826761992",
+      "guildId": "1446654180784738406",
+      "prize": "test",
+      "startTime": 1770996083807,
+      "endTime": 1770996142622,
+      "winnerCount": 1,
+      "requiredRole": "1466534697289912321",
+      "hostId": "1469331925062914149",
+      "ended": true,
+      "winners": []
+    },
+    {
+      "messageId": "1471888758709424189",
+      "channelId": "1466534819826761992",
+      "guildId": "1446654180784738406",
+      "prize": "test",
+      "startTime": 1770996084699,
+      "endTime": 1770996143876,
+      "winnerCount": 1,
+      "requiredRole": "1466534697289912321",
+      "hostId": "1469331925062914149",
+      "ended": true,
+      "winners": [
+        "1289581696995561495"
+      ]
+    },
+    {
+      "messageId": "1471889138369298523",
+      "channelId": "1466534819826761992",
+      "guildId": "1446654180784738406",
+      "prize": "test",
+      "startTime": 1770996175566,
+      "endTime": 1770996234086,
+      "winnerCount": 1,
+      "requiredRole": "1466534697289912321",
+      "hostId": "1469331925062914149",
+      "ended": true,
+      "winners": []
+    },
+    {
+      "messageId": "1471889143125512285",
+      "channelId": "1466534819826761992",
+      "guildId": "1446654180784738406",
+      "prize": "test",
+      "startTime": 1770996176519,
+      "endTime": 1770996235554,
+      "winnerCount": 1,
+      "requiredRole": "1466534697289912321",
+      "hostId": "1469331925062914149",
+      "ended": true,
+      "winners": []
+    },
+    {
+      "messageId": "1471919674362040403",
+      "channelId": "1466534797319868610",
+      "guildId": "1446654180784738406",
+      "prize": "",
+      "startTime": 1771003456164,
+      "endTime": 1771003514875,
+      "winnerCount": 1,
+      "requiredRole": null,
+      "hostId": "1469331925062914149",
+      "ended": true,
+      "winners": [
+        "544869116771696672"
+      ]
+    },
+    {
+      "messageId": "1472299071233327188",
+      "channelId": "1466534819826761992",
+      "guildId": "1446654180784738406",
+      "prize": "test",
+      "startTime": 1771093912088,
+      "endTime": 1771093970712,
+      "winnerCount": 1,
+      "requiredRole": null,
+      "hostId": "1469331925062914149",
+      "ended": true,
+      "winners": [
+        "1289581696995561495"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+<link rel="stylesheet" href="/css/rules.css">
+
+<div class="page-header"
+    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <div>
+        <h2 style="font-size: 2rem; margin-bottom: 10px;"><i class="fas fa-smile"></i>
+            <%= __('autoreact_title') || 'Auto Reactions' %>
+        </h2>
+        <p style="color: var(--text-muted);">Automatically react to messages in specific channels.</p>
+    </div>
+</div>
+
+<!-- Add New Auto Reaction -->
+<div class="glass" style="padding: 25px; margin-bottom: 30px;">
+    <h3 style="margin-bottom: 20px;">Add New Auto Reaction</h3>
+    <form action="/api/autoreact/save" method="POST">
+        <div class="row">
+            <div class="col-md-5 form-group">
+                <label>Channel</label>
+                <select name="channelId" class="custom-select" required>
+                    <% channels.forEach(c=> { %>
+                        <option value="<%= c.id %>">#<%= c.name %>
+                        </option>
+                        <% }) %>
+                </select>
+            </div>
+            <div class="col-md-5 form-group">
+                <label>Emojis (separate by space or comma)</label>
+                <input type="text" name="emojis" class="form-input" placeholder="e.g. ❤️ 🔥 or :custom_emoji:" required>
+            </div>
+            <div class="col-md-2 form-group" style="display: flex; align-items: flex-end;">
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-plus"></i> Add
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Active Auto Reactions -->
+<div class="glass" style="padding: 25px;">
+    <h3 style="margin-bottom: 20px;">Active Configurations</h3>
+    <% if (autoReactions && autoReactions.length> 0) { %>
+        <div style="display: grid; gap: 15px;">
+            <% autoReactions.forEach(ar=> { %>
+                <div class="glass"
+                    style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,0,0,0.2);">
+                    <div>
+                        <div style="font-weight: bold; margin-bottom: 5px;">
+                            <i class="fas fa-hashtag"></i>
+                            <%= channels.find(c=> c.id === ar.channelId)?.name || ar.channelId %>
+                        </div>
+                        <div style="color: var(--text-muted);">
+                            Reactions: <span style="color: white;">
+                                <%= ar.emojis.join(' ') %></span>
+                </div>
+            </div>
+            <form action="/api/autoreact/delete" method="POST" onsubmit="return confirm(' Delete this reaction?');">
+                                    <input type="hidden" name="channelId" value="<%= ar.channelId %>">
+                                    <button type="submit" class="btn btn-delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    </form>
+                        </div>
+                        <% }) %>
+                    </div>
+                    <% } else { %>
+                        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                            <i class="fas fa-meh-blank" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.5;"></i>
+                            <p>No auto reactions configured yet.</p>
+                        </div>
+                        <% } %>
+                </div>

@@ -1,0 +1,40 @@
+module.exports = {
+    en: {
+        dashboard: "Dashboard",
+        general_settings: "General Settings",
+        welcome_leave: "Welcome & Leave",
+        rules: "Rules",
+        ai_chat: "AI Chat",
+        auto_replies: "Auto Replies",
+        feedbacks: "Feedbacks",
+        suggestions: "Suggestions",
+        tickets: "Tickets",
+        automod: "AutoMod",
+        temp_voice: "Temp Voice",
+        colors: "Colors",
+        moderation: "Moderation",
+        logs: "Logs",
+        developer: "Developer",
+        logout: "Logout",
+        copyright_notice: "All Rights Reserved"
+    },
+    ar: {
+        dashboard: "لوحة التحكم",
+        general_settings: "الإعدادات العامة",
+        welcome_leave: "الترحيب والمغادرة",
+        rules: "القوانين",
+        ai_chat: "الذكاء الاصطناعي",
+        auto_replies: "الردود التلقائية",
+        feedbacks: "الآراء والملاحظات",
+        suggestions: "الاقتراحات",
+        tickets: "التذاكر",
+        automod: "الحماية التلقائية",
+        temp_voice: "الغرف المؤقتة",
+        colors: "الألوان",
+        moderation: "الإشراف",
+        logs: "السجلات",
+        developer: "المطور",
+        logout: "تسجيل الخروج",
+        copyright_notice: "جميع الحقوق محفوظة"
+    }
+};
